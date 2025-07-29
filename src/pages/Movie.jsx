@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import { useParams } from "react-router-dom";
+import movies from "../data"; // or wherever your movie data comes from
 
 function Movie() {
   const { id } = useParams();
-  const [movie, setMovie] = useState(null);
 
-  useEffect(() => {
-    fetch(`http://localhost:4000/movies/${id}`)
-      .then((r) => r.json())
-      .then(setMovie);
-  }, [id]);
+  // Convert string to number if id is numeric
+  const movie = movies.find((m) => String(m.id) === id);
 
-  if (!movie) return <h2>Loading...</h2>;
+  // Show a fallback if movie not found
+  if (!movie) {
+    return <h2>Movie not found</h2>;
+  }
 
   return (
     <div>
-      <NavBar />
       <h1>{movie.title}</h1>
       <p>{movie.time} minutes</p>
-      {movie.genres.map((genre, index) => (
+      {/* Ensure genres exists before mapping */}
+      {Array.isArray(movie.genres) && movie.genres.map((genre, index) => (
         <span key={index}>{genre} </span>
       ))}
     </div>
